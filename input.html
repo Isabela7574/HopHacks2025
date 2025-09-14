@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Emotion Predictor</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 28px; }
+    .card { max-width: 560px; padding: 20px; border: 1px solid #ddd; border-radius: 12px; }
+    .row { margin: 12px 0; }
+    #result { white-space: pre-wrap; background: #fafafa; padding: 12px; border-radius: 8px; }
+    button { padding: 10px 16px; border-radius: 8px; border: 1px solid #ccc; background: #f3f3f3; cursor: pointer; }
+    button:disabled { opacity: .6; cursor: wait; }
+  </style>
+</head>
+<body>
+  <h1>Upload audio → predict emotion</h1>
+  <div class="card">
+    <div class="row">
+      <input id="file" type="file" accept=".wav,.mp3,.m4a,.ogg,.flac" />
+    </div>
+    <div class="row">
+      <button id="btn">Predict</button>
+    </div>
+    <div class="row">
+      <div id="result"></div>
+    </div>
+  </div>
+
+  <script>
+    const fileInput = document.getElementById('file');
+    const btn = document.getElementById('btn');
+    const result = document.getElementById('result');
+  
+    btn.onclick = async () => {
+      const f = fileInput.files?.[0];
+      if (!f) { result.textContent = "Pick a file first."; return; }
+      btn.disabled = true; result.textContent = "Predicting...";
+  
+      try {
+        const fd = new FormData();
+        fd.append('file', f, f.name);
+  
+        const res = await fetch('/predict', { method: 'POST', body: fd });
+  
+        const text = await res.text();            // read raw body
+        let json;
+        try { json = JSON.parse(text); }          // try to parse JSON
+        catch { throw new Error(text || res.statusText); }
+  
+        if (!json.ok) throw new Error(json.error || "Unknown server error");
+  
+        const top = json.top ? json.top.map(([c,p]) => `${c}: ${p}`).join('\n')
+                             : '(no probabilities)';
+        result.textContent = `Prediction: ${json.prediction}\n${top}`;
+      } catch (e) {
+        result.textContent = "Error: " + e.message;
+      } finally {
+        btn.disabled = false;
+      }
+    };
+  </script>
+  
+</body>
+</html>
