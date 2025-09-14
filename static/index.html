@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <br>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/png" href="/static/favicon.png">
+  <title>Home</title>
+  <style>
+    /* logo */
+    .logo {
+      width: 60px;
+      object-fit: contain;
+    }
+
+    :root{
+      --bg:#1f2733;
+      --card:#2a3442;
+      --drop:#8a9298;
+      --text:#e8edf2;
+      --muted:#aab6c4;
+      --primary:#5b86c6;
+      --primary-hover:#4b77b8;
+      --radius:26px;
+    }
+
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+      -webkit-font-smoothing:antialiased;
+      display:grid;
+      place-items:start center;
+      padding:90px 20px 56px;
+    }
+
+    /* Navbar */
+    nav {
+      position:fixed;
+      top:0;
+      left:0;
+      right:0;
+      height:75px;
+      background:rgba(42,52,66,0.95);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 32px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+      z-index:1000;
+    }
+    .nav-left, .nav-right {
+      display:flex;
+      align-items:center;
+      gap:24px;
+    }
+    .nav-links a {
+      color:var(--text);
+      text-decoration:none;
+      font-weight:600;
+      font-size: 18px;
+      transition:color 0.2s ease;
+    }
+    .nav-links a:hover {
+      color:var(--primary);
+    }
+
+    h1{
+      margin:0 0 28px;
+      font-weight:800;
+      letter-spacing:.2px;
+      text-align:center;
+    }
+
+    .card{
+      width:min(920px, 92vw);
+      background:var(--card);
+      border-radius:var(--radius);
+      padding:36px 36px 28px;
+      box-shadow: 0 12px 30px rgba(0,0,0,.25), 0 2px 6px rgba(0,0,0,.2);
+    }
+
+    /* Dropzone */
+    .drop{
+      position:relative;
+      height:360px;
+      border-radius:calc(var(--radius) - 6px);
+      background:linear-gradient(180deg, rgba(255,255,255,.1), rgba(255,255,255,.06)), var(--drop);
+      display:grid;
+      place-items:center;
+      color:#fff;
+      font-size:clamp(24px, 4vw, 40px);
+      font-weight:800;
+      text-align:center;
+      user-select:none;
+      outline:2px dashed rgba(255,255,255,.25);
+      outline-offset:-16px;
+      transition:transform .08s ease, outline-color .12s ease, background .12s ease;
+      cursor:pointer;
+    }
+    .drop:hover{ transform: translateY(-1px); }
+    .drop.drag{ outline-color:#fff; background:linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,.1)), var(--drop); }
+
+    #file{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
+
+    .meta{ margin:12px 4px 0; color:var(--muted); font-size:14px; min-height:20px; }
+
+    .actions{
+      display:flex; gap:24px; align-items:center; justify-content:space-between;
+      margin-top:28px; flex-wrap:wrap;
+    }
+
+    .btn{
+      appearance:none; border:0; border-radius:18px;
+      padding:16px 32px; font-weight:700; font-size:22px;
+      letter-spacing:.3px; cursor:pointer; transition:transform .06s ease, background .1s ease;
+      box-shadow: 0 8px 20px rgba(0,0,0,.25);
+    }
+    .btn:disabled{ opacity:.65; cursor:not-allowed; }
+    .btn:active{ transform:translateY(1px); }
+
+    .btn-primary{ background:var(--primary); color:white; }
+    .btn-primary:hover{ background:var(--primary-hover); }
+
+    .btn-ghost{
+      background:rgba(255,255,255,.06); color:var(--text); border:1px solid rgba(255,255,255,.12);
+    }
+    .btn-ghost:hover{ background:rgba(255,255,255,.1); }
+
+    #result{
+      margin-top:22px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:14px;
+      padding:14px 16px;
+      white-space:pre-wrap;
+      color:var(--text);
+      min-height:48px;
+    }
+
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12);
+      color:var(--text); border-radius:999px; padding:6px 12px; font-size:14px;
+    }
+  </style>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <nav>
+    <div class="nav-left">
+      <a href="/"><img src="/static/logo.png" alt="MoodID Logo" class="logo"></a>
+    </div>
+    <div class="nav-right nav-links">
+      <a href="/">Home</a>
+      <a href="/static/resources.html">Resources</a>
+      <a href="/static/about.html">About</a>
+    </div>
+  </nav>
+
+  <h1>Upload Audio → Predict Emotion</h1>
+
+  <div class="card">
+    <input id="file" type="file" accept=".wav,.mp3,.m4a,.ogg,.flac" />
+    <div id="drop" class="drop" role="button" aria-label="Upload audio file" tabindex="0">
+      Upload Audio File
+    </div>
+
+    <div class="meta" id="meta"></div>
+
+    <div class="actions">
+      <button id="btn" class="btn btn-primary" type="button">Predict</button>
+      <span class="pill" id="hint">Accepted: wav, mp3, m4a, ogg, flac</span>
+      <button id="reset" class="btn btn-ghost" type="button">Reset</button>
+    </div>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    const fileInput = document.getElementById('file');
+    const drop = document.getElementById('drop');
+    const btn = document.getElementById('btn');
+    const resetBtn = document.getElementById('reset');
+    const result = document.getElementById('result');
+    const meta = document.getElementById('meta');
+
+    let selectedFile = null;
+
+    const setMeta = (text) => meta.textContent = text || "";
+
+    drop.addEventListener('click', () => fileInput.click());
+    drop.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); }
+    });
+
+    ['dragenter','dragover'].forEach(evt =>
+      drop.addEventListener(evt, (e) => { e.preventDefault(); e.stopPropagation(); drop.classList.add('drag'); })
+    );
+    ['dragleave','drop'].forEach(evt =>
+      drop.addEventListener(evt, (e) => { e.preventDefault(); e.stopPropagation(); drop.classList.remove('drag'); })
+    );
+    drop.addEventListener('drop', (e) => {
+      const f = e.dataTransfer.files?.[0];
+      if (f) { selectedFile = f; setMeta(f.name + " • " + Math.round(f.size/1024) + " KB"); }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      const f = e.target.files?.[0];
+      if (f) { selectedFile = f; setMeta(f.name + " • " + Math.round(f.size/1024) + " KB"); }
+    });
+
+    btn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      if (!selectedFile) { result.textContent = "Pick or drop a file first."; return; }
+      btn.disabled = true; result.textContent = "Predicting…";
+
+      const fd = new FormData();
+      fd.append('file', selectedFile, selectedFile.name);
+
+      try {
+        const res = await fetch('/predict', { method: 'POST', body: fd });
+        const text = await res.text();
+        if (!res.ok) throw new Error(`${res.status} ${res.statusText}: ${text}`);
+        const json = JSON.parse(text);
+        if (!json.ok) throw new Error(json.error || "Unknown server error");
+        const top = json.top ? json.top.map(([c,p]) => `${c}: ${p}`).join('\n') : '(no probabilities)';
+        result.textContent = `Prediction: ${json.prediction}\n${top}`;
+      } catch (err) {
+        result.textContent = "Error: " + err.message;
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    resetBtn.addEventListener('click', () => {
+      fileInput.value = "";
+      selectedFile = null;
+      setMeta("");
+      result.textContent = "";
+      drop.classList.remove('drag');
+    });
+  </script>
+</body>
+</html>

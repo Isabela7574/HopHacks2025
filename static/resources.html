@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Autism Resources</title>
+  <style>
+    :root{
+      --bg:#1f2733;
+      --card:#2a3442;
+      --panel:#354254;
+      --text:#e8edf2;
+      --muted:#aab6c4;
+      --primary:#5b86c6;
+      --primary-hover:#4b77b8;
+      --success:#39c27f;
+      --danger:#ff6b6b;
+      --radius:20px;
+    }
+
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+      -webkit-font-smoothing:antialiased;
+      padding:90px 20px 56px;
+    }
+
+    /* Navbar (matches your index) */
+    nav {
+      position:fixed; inset:0 0 auto 0; height:70px;
+      background:rgba(42,52,66,.95);
+      display:flex; align-items:center; justify-content:space-between;
+      padding:0 32px; box-shadow:0 2px 10px rgba(0,0,0,.4); z-index:1000;
+    }
+    .nav-left, .nav-right { 
+      display:flex; align-items:center; gap:24px; 
+    }
+    .logo { 
+      width:60px; object-fit:contain;
+     }
+    .nav-links a{
+       color:var(--text); text-decoration:none; font-weight:600;
+       }
+    .nav-links a:hover{
+       color:var(--primary);
+       }
+
+    /* Page header */
+    .wrap{ 
+      max-width:1100px; margin:0 auto;
+    }
+    h1{ 
+      font-size:clamp(26px,4vw,40px); margin:0 0 12px; 
+    }
+    p.lead{ 
+      color:var(--muted); margin:0 0 24px;
+     }
+
+    /* Emergency banner */
+    .alert{
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)), #5b3344;
+      border:1px solid rgba(255,255,255,.18);
+      border-left:6px solid var(--danger);
+      padding:14px 16px; border-radius:12px; margin:12px 0 24px;
+    }
+    .alert strong{ color:#ffdede }
+
+    /* Controls */
+    .controls{
+      display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin:6px 0 18px;
+    }
+    .search{
+      flex:1 1 340px; background:var(--panel); border:1px solid rgba(255,255,255,.14);
+      border-radius:12px; padding:12px 14px; color:var(--text); font-size:16px;
+    }
+    .chip{
+      background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.18);
+      color:var(--text); border-radius:999px; padding:8px 12px; font-size:14px;
+      cursor:pointer; user-select:none;
+    }
+    .chip[aria-pressed="true"]{ background:var(--primary); border-color:transparent; }
+
+    /* Resource grid */
+    .grid{ display:grid; gap:16px; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); }
+    .card{
+      background:var(--card); border:1px solid rgba(255,255,255,.12);
+      border-radius:var(--radius); padding:16px; display:flex; flex-direction:column; gap:10px;
+    }
+    .tag{ display:inline-block; font-size:12px; padding:4px 8px; border-radius:999px;
+          border:1px solid rgba(255,255,255,.18); color:var(--text); }
+    .card h3{ margin:0; font-size:22px; }
+    .card p{ margin:0; color:var(--muted); }
+    .card a.btn{
+      margin-top:auto; align-self:flex-start;
+      background:var(--primary); color:white; text-decoration:none;
+      padding:10px 14px; border-radius:12px; font-weight:700;
+    }
+    .card a.btn:hover{ background:var(--primary-hover); }
+
+    /* Section headings */
+    h2{ margin:28px 0 12px; font-size:22px; }
+
+    /* Skip link */
+    .skip{ position:fixed; left:-9999px; top:-9999px; }
+    .skip:focus{ left:16px; top:16px; z-index:2000; background:#000; color:#fff; padding:8px 10px; border-radius:10px; }
+
+    /* Focus outlines */
+
+    @media (prefers-reduced-motion: reduce){
+      *{ animation:none!important; transition:none!important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <nav>
+    <div class="nav-left">
+      <a href="/"><img src="/static/logo.png" alt="MoodID Logo" class="logo"></a>
+    </div>
+    <div class="nav-right nav-links">
+      <a href="/">Home</a>
+      <a href="/static/resources.html">Resources</a>
+      <a href="/static/about.html">About</a>
+    </div>
+  </nav>
+  <main id="main" class="wrap" role="main">
+    <h1>Autism Resources</h1>
+    <p class="lead">Curated supports for autistic people, families, and caregivers. Use search or tap a filter to narrow results.</p>
+
+    <div class="alert" role="region" aria-label="Immediate help">
+      <strong>Need help now?</strong> In the U.S., call or text <strong>988</strong> for the Suicide & Crisis Lifeline. 
+      For non-emergency social services, dial <strong>211</strong>.
+    </div>
+
+    <!-- Filters -->
+    <section class="controls" aria-label="Filters">
+      <input id="q" class="search" type="search" placeholder="Search resources (e.g., diagnosis, sensory, college, jobs)"/>
+      <button class="chip" data-tag="services" aria-pressed="false">Services</button>
+      <button class="chip" data-tag="education" aria-pressed="false">Education</button>
+      <button class="chip" data-tag="sensory" aria-pressed="false">Sensory</button>
+      <button class="chip" data-tag="employment" aria-pressed="false">Employment</button>
+      <button class="chip" data-tag="community" aria-pressed="false">Community</button>
+      <button class="chip" data-tag="rights" aria-pressed="false">Rights</button>
+      <button class="chip" data-tag="crisis" aria-pressed="false">Crisis</button>
+      <button class="chip" id="clear">Clear</button>
+    </section>
+
+    <!-- Resources -->
+    <section aria-label="Resource list">
+      <div id="grid" class="grid"></div>
+    </section>
+
+    <p style="margin-top:22px;color:var(--muted);font-size:14px;text-align: center;">Disclaimer: This list is for information only and not medical or legal advice. Always verify services in your region.
+    </p>
+    <br>
+  </main>
+
+  <script>
+    // Minimal dataset (add/adjust freely)
+    const resources = [
+      // SERVICES / DIAGNOSIS / INFO
+      {name:"CDC – Autism Information", url:"https://www.cdc.gov/ncbddd/autism", desc:"Signs, diagnosis, developmental milestones, toolkits.", tags:["services","education"]},
+      {name:"Autism Society", url:"https://autismsociety.org", desc:"Local affiliates, helplines, nationwide services directory.", tags:["services","community"]},
+      {name:"Autistic Self Advocacy Network (ASAN)", url:"https://autisticadvocacy.org", desc:"Nothing about us without us—policy, self-advocacy, guides.", tags:["community","rights","education"]},
+      {name:"Autism Speaks Resource Guide", url:"https://www.autismspeaks.org/resource-guide", desc:"Find providers and supports by state.", tags:["services"]},
+
+      // EDUCATION / COLLEGE
+      {name:"Think College", url:"https://thinkcollege.net", desc:"College programs for students with intellectual disabilities and autism.", tags:["education"]},
+      {name:"Wrightslaw – Special Education Law", url:"https://wrightslaw.com", desc:"IEP/504, IDEA, parent rights and advocacy guides.", tags:["education","rights"]},
+
+      // SENSORY / DAILY LIVING
+      {name:"Sensory Processing (STAR Institute)", url:"https://sensoryhealth.org", desc:"Evidence-based info, OT provider locator, sensory strategies.", tags:["sensory","services"]},
+      {name:"ABLE accounts (U.S.)", url:"https://www.ablenrc.org", desc:"Tax-advantaged savings for disability-related expenses.", tags:["rights","services"]},
+
+      // EMPLOYMENT
+      {name:"Job Accommodation Network (JAN)", url:"https://askjan.org", desc:"Confidential advice on workplace accommodations (ADA).", tags:["employment","rights"]},
+      {name:"Neurodiversity @ Work", url:"https://ndatwork.com", desc:"Employer consortium, hiring programs, playbooks.", tags:["employment","community"]},
+
+      // COMMUNITY / PEER SUPPORT
+      {name:"Meetup – Neurodiversity & Autism", url:"https://www.meetup.com/find/?keywords=neurodiversity%20autism", desc:"Local peer groups and events (varies by area).", tags:["community"]},
+
+      // CRISIS / HOTLINES (U.S.)
+      {name:"988 Suicide & Crisis Lifeline", url:"https://988lifeline.org", desc:"Call/text 988 or chat for 24/7 support.", tags:["crisis"]},
+      {name:"Crisis Text Line", url:"https://www.crisistextline.org", desc:"Text HOME to 741741 for 24/7 support.", tags:["crisis"]},
+      {name:"SAMHSA Treatment Locator", url:"https://findtreatment.gov", desc:"Find mental health and substance use services.", tags:["services","crisis"]},
+      {name:"211 (U.S.)", url:"https://www.211.org", desc:"Food, housing, health, & local assistance—dial 211.", tags:["services"]},
+    ];
+
+    const grid = document.getElementById('grid');
+    const search = document.getElementById('q');
+    const chips = [...document.querySelectorAll('.chip[data-tag]')];
+    const clearBtn = document.getElementById('clear');
+
+    const state = { q:"", tags:new Set() };
+
+    function render(){
+      const q = state.q.trim().toLowerCase();
+      const active = state.tags;
+
+      const filtered = resources.filter(r=>{
+        const text = (r.name + " " + r.desc + " " + r.tags.join(" ")).toLowerCase();
+        const matchesQ = q ? text.includes(q) : true;
+        const matchesTags = active.size ? r.tags.some(t=>active.has(t)) : true;
+        return matchesQ && matchesTags;
+      });
+
+      grid.innerHTML = filtered.map(r => `
+        <article class="card" tabindex="0">
+          <span class="tag">${r.tags[0]}</span>
+          <h3>${r.name}</h3>
+          <p>${r.desc}</p>
+          <a class="btn" href="${r.url}" target="_blank" rel="noopener noreferrer">Open</a>
+        </article>
+      `).join("") || `<p style="color:var(--muted)">No results. Try a different search or clear filters.</p>`;
+    }
+
+    search.addEventListener('input', e=>{ state.q = e.target.value; render(); });
+
+    chips.forEach(chip=>{
+      chip.addEventListener('click', ()=>{
+        const tag = chip.dataset.tag;
+        const pressed = chip.getAttribute('aria-pressed') === 'true';
+        chip.setAttribute('aria-pressed', String(!pressed));
+        if (pressed) state.tags.delete(tag); else state.tags.add(tag);
+        render();
+      });
+    });
+
+    clearBtn.addEventListener('click', ()=>{
+      state.q = ""; search.value = "";
+      state.tags.clear();
+      chips.forEach(c=>c.setAttribute('aria-pressed','false'));
+      render();
+    });
+
+    // initial
+    render();
+  </script>
+</body>
+</html>
