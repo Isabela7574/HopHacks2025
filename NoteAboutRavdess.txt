@@ -1,0 +1,1 @@
+This project uses the RAVDESS emotion dataset from Kaggle. SInce this dataset is too big, it is imppossiable to load onto Github. If you plan to run this localy have the dataset saved in the same location as this file.
